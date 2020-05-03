@@ -1,5 +1,5 @@
 /// The floating point type.
-type Flt = f64;
+pub type Flt = f64;
 
 /// A value in range [0..1].
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
@@ -14,6 +14,23 @@ pub enum Within {
     First(Portion),
     /// Represents the portion within the interval ]denominator..1].
     Second(Portion),
+}
+
+/// Any quantity that can be multiplied with a floating point value.
+///
+/// ```
+/// use portion::f64::{ApplyPortion, Flt};
+/// struct Speed(f64);
+///
+/// impl ApplyPortion for Speed {
+///    fn apply_portion(self, portion: Flt) -> Self {
+///       Self(self.0 * portion)
+///    }
+/// }
+/// ```
+pub trait ApplyPortion {
+    /// * `portion` - A value in range [0..1]
+    fn apply_portion(self, portion: Flt) -> Self;
 }
 
 impl Portion {
@@ -104,6 +121,38 @@ impl Portion {
     /// ```
     pub fn scale(self, s: Flt) -> Result<Self, ()> {
         Self::new(self.0 * s)
+    }
+
+    /// Apply the portion to a certain quantity.
+    ///
+    /// This is the recommended way of applying a portion. The quantity type should follow the newtype idiom.
+    ///
+    /// ```
+    /// use portion::f64::{ApplyPortion, Flt, Portion};
+    /// struct Speed(f64);
+    ///
+    /// impl ApplyPortion for Speed {
+    ///    fn apply_portion(self, portion: Flt) -> Self {
+    ///       Self(self.0 * portion)
+    ///    }
+    /// }
+    ///
+    /// fn half_speed(speed: Speed) -> Speed {
+    ///    Portion::half().apply(speed)
+    /// }
+    ///
+    /// fn test_half_speed() {
+    ///    let speed = half_speed(Speed(-16.0));
+    ///    assert_eq!(speed.0, -8.0);
+    /// }
+    ///
+    /// test_half_speed();
+    /// ```
+    pub fn apply<Q>(self, quantity: Q) -> Q
+    where
+        Q: ApplyPortion,
+    {
+        quantity.apply_portion(self.0)
     }
 
     /// Returns the difference to 1.
