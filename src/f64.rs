@@ -625,3 +625,19 @@ mod tests_dportion {
         assert_eq!(x, x);
     }
 }
+
+/*The code above is practically a copy pase of f32's where 32 is replaced by 64*/
+
+use crate::f32 as F32;
+
+impl From<F32::Portion> for Portion {
+    fn from(p: F32::Portion) -> Self {
+        Self(F32::Portion::value(p).into())
+    }
+}
+
+impl From<F32::SPortion> for SPortion {
+    fn from(sp: F32::SPortion) -> Self {
+        Self(F32::SPortion::value(sp).into())
+    }
+}
