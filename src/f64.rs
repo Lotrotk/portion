@@ -181,6 +181,20 @@ impl std::ops::Neg for Portion {
     }
 }
 
+impl Eq for Portion {}
+
+impl Ord for Portion {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.0 < other.0 {
+            std::cmp::Ordering::Less
+        } else if self.0 == other.0 {
+            std::cmp::Ordering::Equal
+        } else {
+            std::cmp::Ordering::Greater
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests_portion {
     use super::*;
@@ -267,6 +281,15 @@ mod tests_portion {
     fn test_neg() {
         let x: SPortion = -Portion::new(0.25).unwrap();
         assert_eq!(SPortion::value(x), -0.25);
+    }
+
+    #[test]
+    fn test_ord() {
+        let x = Portion::new(0.25).unwrap();
+        let y = Portion::half();
+        assert!(x < y);
+        assert!(y > x);
+        assert_eq!(x, x);
     }
 }
 
@@ -430,6 +453,20 @@ impl std::ops::Neg for SPortion {
     }
 }
 
+impl Eq for SPortion {}
+
+impl Ord for SPortion {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.0 < other.0 {
+            std::cmp::Ordering::Less
+        } else if self.0 == other.0 {
+            std::cmp::Ordering::Equal
+        } else {
+            std::cmp::Ordering::Greater
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests_dportion {
     use super::*;
@@ -490,5 +527,14 @@ mod tests_dportion {
     fn test_neg() {
         let x = -SPortion::new(0.25).unwrap();
         assert_eq!(SPortion::value(x), -0.25);
+    }
+
+    #[test]
+    fn test_ord() {
+        let x = -SPortion::half();
+        let y = SPortion::half();
+        assert!(x < y);
+        assert!(y > x);
+        assert_eq!(x, x);
     }
 }
