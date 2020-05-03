@@ -251,6 +251,7 @@ impl std::ops::Neg for Portion {
 impl Eq for Portion {}
 
 impl Ord for Portion {
+    #[allow(clippy::float_cmp)]
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         if self.0 < other.0 {
             std::cmp::Ordering::Less
@@ -541,6 +542,7 @@ impl std::ops::Neg for SPortion {
 impl Eq for SPortion {}
 
 impl Ord for SPortion {
+    #[allow(clippy::float_cmp)]
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         if self.0 < other.0 {
             std::cmp::Ordering::Less
