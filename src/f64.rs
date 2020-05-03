@@ -74,13 +74,13 @@ impl Portion {
     /// Returns a floating point value in range [0..1].
     ///
     /// This is intentionally not a method. Avoid it.
-	///
+    ///
     /// ```
     /// use portion::f64::Portion;
     /// let p = Portion::try_new(0.25).unwrap();
     /// assert_eq!(Portion::value(p), 0.25);
     /// ```
-    pub const fn value(p : Portion) -> Flt {
+    pub const fn value(p: Portion) -> Flt {
         p.0
     }
 
@@ -276,8 +276,8 @@ impl SPortion {
     ///
     /// ```
     /// use portion::f64::SPortion;
-    /// let p = SPortion::minus_one();
-    /// assert_eq!(SPortion::value(p), -1.0);
+    /// let sp = SPortion::minus_one();
+    /// assert_eq!(SPortion::value(sp), -1.0);
     /// ```
     pub const fn minus_one() -> Self {
         SPortion(-1.0)
@@ -287,8 +287,8 @@ impl SPortion {
     ///
     /// ```
     /// use portion::f64::SPortion;
-    /// let p = SPortion::zero();
-    /// assert_eq!(SPortion::value(p), 0.0);
+    /// let sp = SPortion::zero();
+    /// assert_eq!(SPortion::value(sp), 0.0);
     /// ```
     pub const fn zero() -> Self {
         SPortion(0.0)
@@ -296,8 +296,8 @@ impl SPortion {
 
     /// ```
     /// use portion::f64::SPortion;
-    /// let p = SPortion::half();
-    /// assert_eq!(SPortion::value(p), 0.5);
+    /// let sp = SPortion::half();
+    /// assert_eq!(SPortion::value(sp), 0.5);
     /// ```
     pub const fn half() -> Self {
         SPortion(0.5)
@@ -307,8 +307,8 @@ impl SPortion {
     ///
     /// ```
     /// use portion::f64::SPortion;
-    /// let p = SPortion::one();
-    /// assert_eq!(SPortion::value(p), 1.0);
+    /// let sp = SPortion::one();
+    /// assert_eq!(SPortion::value(sp), 1.0);
     /// ```
     pub const fn one() -> Self {
         SPortion(1.0)
@@ -318,16 +318,16 @@ impl SPortion {
     ///
     /// ```
     /// use portion::f64::SPortion;
-    /// let p = SPortion::try_new(-1.5);
-    /// assert!(p.is_err());
-    /// let p = SPortion::try_new(-1.0);
-    /// assert!(p.is_ok());
-    /// let p = SPortion::try_new(0.0);
-    /// assert!(p.is_ok());
-    /// let p = SPortion::try_new(1.0);
-    /// assert!(p.is_ok());
-    /// let p = SPortion::try_new(1.5);
-    /// assert!(p.is_err());
+    /// let sp = SPortion::try_new(-1.5);
+    /// assert!(sp.is_err());
+    /// let sp = SPortion::try_new(-1.0);
+    /// assert!(sp.is_ok());
+    /// let sp = SPortion::try_new(0.0);
+    /// assert!(sp.is_ok());
+    /// let sp = SPortion::try_new(1.0);
+    /// assert!(sp.is_ok());
+    /// let sp = SPortion::try_new(1.5);
+    /// assert!(sp.is_err());
     /// ```
     pub fn try_new(value: Flt) -> Result<Self, ()> {
         if -1.0 <= value && value <= 1. {
@@ -338,16 +338,16 @@ impl SPortion {
     }
 
     /// Returns a floating point value in range [-1..1].
-	///
+    ///
     /// This is intentionally not a method. Avoid it.
-	///
+    ///
     /// ```
     /// use portion::f64::SPortion;
-    /// let p = SPortion::try_new(-0.25).unwrap();
-    /// assert_eq!(SPortion::value(p), -0.25);
+    /// let sp = SPortion::try_new(-0.25).unwrap();
+    /// assert_eq!(SPortion::value(sp), -0.25);
     /// ```
-    pub const fn value(p : SPortion) -> Flt {
-        p.0
+    pub const fn value(sp: SPortion) -> Flt {
+        sp.0
     }
 
     /// Converts to a positive portion, if the value is not negative.
