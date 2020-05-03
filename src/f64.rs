@@ -20,18 +20,18 @@ impl Portion {
     /// The minimum value.
     ///
     /// ```
-    /// use portion::f32::Portion;
+    /// use portion::f64::Portion;
     /// let p = Portion::zero();
-    /// assert_eq!(p.value(), 0.0);
+    /// assert_eq!(Portion::value(p), 0.0);
     /// ```
     pub const fn zero() -> Self {
         Portion(0.0)
     }
 
     /// ```
-    /// use portion::f32::Portion;
+    /// use portion::f64::Portion;
     /// let p = Portion::half();
-    /// assert_eq!(p.value(), 0.5);
+    /// assert_eq!(Portion::value(p), 0.5);
     /// ```
     pub const fn half() -> Self {
         Portion(0.5)
@@ -40,9 +40,9 @@ impl Portion {
     /// The unit and maximum value.
     ///
     /// ```
-    /// use portion::f32::Portion;
+    /// use portion::f64::Portion;
     /// let p = Portion::one();
-    /// assert_eq!(p.value(), 1.0);
+    /// assert_eq!(Portion::value(p), 1.0);
     /// ```
     pub const fn one() -> Self {
         Portion(1.0)
@@ -51,7 +51,7 @@ impl Portion {
     /// Creates a portion at run time.
     ///
     /// ```
-    /// use portion::f32::Portion;
+    /// use portion::f64::Portion;
     /// let p = Portion::try_new(-0.5);
     /// assert!(p.is_err());
     /// let p = Portion::try_new(0.0);
@@ -73,22 +73,24 @@ impl Portion {
 
     /// Returns a floating point value in range [0..1].
     ///
+    /// This is intentionally not a method. Avoid it.
+	///
     /// ```
-    /// use portion::f32::Portion;
+    /// use portion::f64::Portion;
     /// let p = Portion::try_new(0.25).unwrap();
-    /// assert_eq!(p.value(), 0.25);
+    /// assert_eq!(Portion::value(p), 0.25);
     /// ```
-    pub const fn value(self) -> Flt {
-        self.0
+    pub const fn value(p : Portion) -> Flt {
+        p.0
     }
 
     /// Returns the difference to 1.
     ///
     /// ```
-    /// use portion::f32::Portion;
+    /// use portion::f64::Portion;
     /// let x = Portion::try_new(0.25).unwrap();
     /// let y = x.complement();
-    /// assert_eq!(y.value(), 0.75);
+    /// assert_eq!(Portion::value(y), 0.75);
     /// ```
     pub fn complement(self) -> Portion {
         Portion(1.0 - self.0)
@@ -97,12 +99,12 @@ impl Portion {
     /// The relative portion of one (numerator) within another (denominator).
     ///
     /// ```
-    /// use portion::f32::{Portion, Within};
+    /// use portion::f64::{Portion, Within};
     /// let x = Portion::try_new(0.125).unwrap();
     /// let y = Portion::half();
     /// let z = x.within(y);
     /// if let Within::First(first) = z {
-    ///    assert_eq!(first.value(), 0.25);
+    ///    assert_eq!(Portion::value(first), 0.25);
     /// } else {
     ///    panic!("This should really lie in the first segment");
     /// }
@@ -111,7 +113,7 @@ impl Portion {
     /// let y = Portion::half();
     /// let z = x.within(y);
     /// if let Within::Second(second) = z {
-    ///    assert_eq!(second.value(), 0.75);
+    ///    assert_eq!(Portion::value(second), 0.75);
     /// } else {
     ///    panic!("This should really lie in the second segment");
     /// }
@@ -177,7 +179,7 @@ impl std::ops::Neg for Portion {
 
 #[cfg(test)]
 mod tests_portion {
-    use super::{Portion, Within};
+    use super::*;
 
     #[test]
     fn test_within() {
@@ -200,22 +202,22 @@ mod tests_portion {
     fn test_mul_self() {
         let x = Portion::half();
         let y = x * x;
-        assert_eq!(y.value(), 0.25);
+        assert_eq!(Portion::value(y), 0.25);
     }
 
     #[test]
     fn test_mul_negative() {
         let x = Portion::half();
-        let y = -super::SPortion::half();
+        let y = -SPortion::half();
         let z = x * y;
-        assert_eq!(z.value(), -0.25);
+        assert_eq!(SPortion::value(z), -0.25);
     }
 
     #[test]
     fn test_add_self() {
         let x = Portion::try_new(0.25).unwrap();
         let y = (x + x).unwrap();
-        assert_eq!(y.value(), 0.5);
+        assert_eq!(Portion::value(y), 0.5);
         let x = Portion::try_new(0.75).unwrap();
         let y = x + x;
         assert!(y.is_err());
@@ -224,13 +226,13 @@ mod tests_portion {
     #[test]
     fn test_add_negative() {
         let x = Portion::try_new(0.25).unwrap();
-        let y = super::SPortion::try_new(0.5).unwrap();
+        let y = SPortion::try_new(0.5).unwrap();
         let z = (x + y).unwrap();
-        assert_eq!(z.value(), 0.75);
-        let y = super::SPortion::try_new(-0.5).unwrap();
+        assert_eq!(SPortion::value(z), 0.75);
+        let y = SPortion::try_new(-0.5).unwrap();
         let z = (x + y).unwrap();
-        assert_eq!(z.value(), -0.25);
-        let y = super::SPortion::try_new(0.9).unwrap();
+        assert_eq!(SPortion::value(z), -0.25);
+        let y = SPortion::try_new(0.9).unwrap();
         let z = x + y;
         assert!(z.is_err());
     }
@@ -240,27 +242,27 @@ mod tests_portion {
         let x = Portion::try_new(0.25).unwrap();
         let y = Portion::try_new(0.5).unwrap();
         let z = x - y;
-        assert_eq!(z.value(), -0.25);
+        assert_eq!(SPortion::value(z), -0.25);
     }
 
     #[test]
     fn test_sub_negative() {
         let x = Portion::try_new(0.25).unwrap();
-        let y = super::SPortion::try_new(0.5).unwrap();
+        let y = SPortion::try_new(0.5).unwrap();
         let z = (x - y).unwrap();
-        assert_eq!(z.value(), -0.25);
-        let y = super::SPortion::try_new(-0.5).unwrap();
+        assert_eq!(SPortion::value(z), -0.25);
+        let y = SPortion::try_new(-0.5).unwrap();
         let z = (x - y).unwrap();
-        assert_eq!(z.value(), 0.75);
-        let y = super::SPortion::try_new(-0.9).unwrap();
+        assert_eq!(SPortion::value(z), 0.75);
+        let y = SPortion::try_new(-0.9).unwrap();
         let z = x - y;
         assert!(z.is_err());
     }
 
     #[test]
     fn test_neg() {
-        let x: super::SPortion = -Portion::try_new(0.25).unwrap();
-        assert_eq!(x.value(), -0.25);
+        let x: SPortion = -Portion::try_new(0.25).unwrap();
+        assert_eq!(SPortion::value(x), -0.25);
     }
 }
 
@@ -273,9 +275,9 @@ impl SPortion {
     /// The minimum value.
     ///
     /// ```
-    /// use portion::f32::SPortion;
+    /// use portion::f64::SPortion;
     /// let p = SPortion::minus_one();
-    /// assert_eq!(p.value(), -1.0);
+    /// assert_eq!(SPortion::value(p), -1.0);
     /// ```
     pub const fn minus_one() -> Self {
         SPortion(-1.0)
@@ -284,18 +286,18 @@ impl SPortion {
     /// The zero value.
     ///
     /// ```
-    /// use portion::f32::SPortion;
+    /// use portion::f64::SPortion;
     /// let p = SPortion::zero();
-    /// assert_eq!(p.value(), 0.0);
+    /// assert_eq!(SPortion::value(p), 0.0);
     /// ```
     pub const fn zero() -> Self {
         SPortion(0.0)
     }
 
     /// ```
-    /// use portion::f32::SPortion;
+    /// use portion::f64::SPortion;
     /// let p = SPortion::half();
-    /// assert_eq!(p.value(), 0.5);
+    /// assert_eq!(SPortion::value(p), 0.5);
     /// ```
     pub const fn half() -> Self {
         SPortion(0.5)
@@ -304,9 +306,9 @@ impl SPortion {
     /// The unit and maximum value.
     ///
     /// ```
-    /// use portion::f32::SPortion;
+    /// use portion::f64::SPortion;
     /// let p = SPortion::one();
-    /// assert_eq!(p.value(), 1.0);
+    /// assert_eq!(SPortion::value(p), 1.0);
     /// ```
     pub const fn one() -> Self {
         SPortion(1.0)
@@ -315,7 +317,7 @@ impl SPortion {
     /// Creates a portion at run time.
     ///
     /// ```
-    /// use portion::f32::SPortion;
+    /// use portion::f64::SPortion;
     /// let p = SPortion::try_new(-1.5);
     /// assert!(p.is_err());
     /// let p = SPortion::try_new(-1.0);
@@ -336,23 +338,25 @@ impl SPortion {
     }
 
     /// Returns a floating point value in range [-1..1].
-    ///
+	///
+    /// This is intentionally not a method. Avoid it.
+	///
     /// ```
-    /// use portion::f32::SPortion;
+    /// use portion::f64::SPortion;
     /// let p = SPortion::try_new(-0.25).unwrap();
-    /// assert_eq!(p.value(), -0.25);
+    /// assert_eq!(SPortion::value(p), -0.25);
     /// ```
-    pub const fn value(self) -> Flt {
-        self.0
+    pub const fn value(p : SPortion) -> Flt {
+        p.0
     }
 
     /// Converts to a positive portion, if the value is not negative.
     ///
     /// ```
-    /// use portion::f32::SPortion;
+    /// use portion::f64::{Portion, SPortion};
     /// let x = SPortion::half();
     /// let y = x.to_portion().unwrap();
-    /// assert_eq!(y.value(), 0.5);
+    /// assert_eq!(Portion::value(y), 0.5);
     /// let x = SPortion::try_new(-0.5).unwrap();
     /// let y = x.to_portion();
     /// assert!(y.is_err());
@@ -364,13 +368,13 @@ impl SPortion {
     /// Removes the value's sign.
     ///
     /// ```
-    /// use portion::f32::SPortion;
+    /// use portion::f64::{Portion, SPortion};
     /// let x = SPortion::half();
     /// let y = x.abs();
-    /// assert_eq!(y.value(), 0.5);
+    /// assert_eq!(Portion::value(y), 0.5);
     /// let x = -SPortion::half();
     /// let y = x.abs();
-    /// assert_eq!(y.value(), 0.5);
+    /// assert_eq!(Portion::value(y), 0.5);
     /// ```
     pub fn abs(self) -> Portion {
         Portion(Flt::abs(self.0))
@@ -420,28 +424,28 @@ impl std::ops::Neg for SPortion {
 
 #[cfg(test)]
 mod tests_dportion {
-    use super::SPortion;
+    use super::*;
 
     #[test]
     fn test_from_portion() {
-        let x = super::Portion::half();
+        let x = Portion::half();
         let y: SPortion = x.into();
-        assert_eq!(y.value(), 0.5);
+        assert_eq!(SPortion::value(y), 0.5);
     }
 
     #[test]
     fn test_mul() {
         let x = SPortion::half();
         let y = -x * x;
-        assert_eq!(y.value(), -0.25);
+        assert_eq!(SPortion::value(y), -0.25);
     }
 
     #[test]
     fn test_mul_positive() {
         let x = -SPortion::half();
-        let y = super::Portion::half();
+        let y = Portion::half();
         let z = x * y;
-        assert_eq!(z.value(), -0.25);
+        assert_eq!(SPortion::value(z), -0.25);
     }
 
     #[test]
@@ -449,7 +453,7 @@ mod tests_dportion {
         let x = SPortion::try_new(0.25).unwrap();
         let y = SPortion::try_new(-0.5).unwrap();
         let z = (x + y).unwrap();
-        assert_eq!(z.value(), -0.25);
+        assert_eq!(SPortion::value(z), -0.25);
         let x = SPortion::try_new(0.75).unwrap();
         let y = x + x;
         assert!(y.is_err());
@@ -463,7 +467,7 @@ mod tests_dportion {
         let x = SPortion::try_new(0.25).unwrap();
         let y = SPortion::try_new(0.5).unwrap();
         let z = (x - y).unwrap();
-        assert_eq!(z.value(), -0.25);
+        assert_eq!(SPortion::value(z), -0.25);
         let x = SPortion::try_new(0.75).unwrap();
         let y = SPortion::try_new(-0.75).unwrap();
         let z = x - y;
@@ -477,6 +481,6 @@ mod tests_dportion {
     #[test]
     fn test_neg() {
         let x = -SPortion::try_new(0.25).unwrap();
-        assert_eq!(x.value(), -0.25);
+        assert_eq!(SPortion::value(x), -0.25);
     }
 }
