@@ -88,6 +88,24 @@ impl Portion {
         p.0
     }
 
+    /// Multiplies the portion with a scalar.
+    ///
+    /// Note that multiplying with another portion is more optimized.
+    ///
+    /// ```
+    /// use portion::f32::Portion;
+    /// let x = Portion::new(0.25).unwrap();
+    /// let y = x.scale(2.0).unwrap();
+    /// assert_eq!(Portion::value(y), 0.5);
+    /// let y = x.scale(10.0);
+    /// assert!(y.is_err());
+    /// let y = x.scale(-1.0);
+    /// assert!(y.is_err());
+    /// ```
+    pub fn scale(self, s: Flt) -> Result<Self, ()> {
+        Self::new(self.0 * s)
+    }
+
     /// Returns the difference to 1.
     ///
     /// ```
@@ -379,6 +397,24 @@ impl SPortion {
     /// ```
     pub const fn value(sp: SPortion) -> Flt {
         sp.0
+    }
+
+    /// Multiplies the portion with a scalar.
+    ///
+    /// Note that multiplying with another portion is more optimized.
+    ///
+    /// ```
+    /// use portion::f32::SPortion;
+    /// let x = SPortion::new(0.25).unwrap();
+    /// let y = x.scale(2.0).unwrap();
+    /// assert_eq!(SPortion::value(y), 0.5);
+    /// let y = x.scale(10.0);
+    /// assert!(y.is_err());
+    /// let y = x.scale(-1.0).unwrap();
+    /// assert_eq!(SPortion::value(y), -0.25);
+    /// ```
+    pub fn scale(self, s: Flt) -> Result<Self, ()> {
+        Self::new(self.0 * s)
     }
 
     /// Converts to a positive portion, if the value is not negative.
